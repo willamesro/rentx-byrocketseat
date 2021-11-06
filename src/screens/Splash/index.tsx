@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, StackActions } from '@react-navigation/native'
 
 import BrandSvg from '../../assets/brand.svg'
 import LogoSvg from '../../assets/logo.svg'
@@ -42,7 +42,7 @@ export function Splash() {
     })
 
     function startApp() {
-        navigation.navigate('Home')
+        navigation.dispatch(StackActions.replace('Home'))
     }
 
     useEffect(() => {
@@ -60,14 +60,12 @@ export function Splash() {
     return (
         <Container>
             <Animated.View style={[brandStyles, { position: 'absolute' }]}>
-                <BrandSvg width={88} height={60} />
+                <BrandSvg width={80} height={50} />
             </Animated.View>
 
             <Animated.View style={[logoStyles, { position: 'absolute' }]}>
                 <LogoSvg width={180} height={20} />
             </Animated.View>
-
-
         </Container>
     )
 
