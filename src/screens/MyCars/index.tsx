@@ -21,9 +21,9 @@ import {
     CarFooterPeriod,
     CarFooterDate,
 } from './styles'
-import { Load } from '../../components/Load/iindex'
 import { BackButton } from '../../components/BackButton'
 import { useTheme } from 'styled-components'
+import { LoadAnimation } from '../../components/LoadAnimation'
 
 interface CarProps {
     id: string
@@ -81,7 +81,7 @@ export function MyCars() {
                     </SubTitle>
 
             </Header>
-            {loading ? <Load /> :
+            {loading ? <LoadAnimation /> :
                 <Content>
                     <Appointments>
                         <AppointmentTitle>Agendamentos feitos</AppointmentTitle>
