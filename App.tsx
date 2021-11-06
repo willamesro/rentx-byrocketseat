@@ -1,23 +1,23 @@
-import React from 'react';
-import { StatusBar } from 'react-native';
-import AppLoading from 'expo-app-loading';
-import { ThemeProvider } from 'styled-components';
+import React from 'react'
+import { StatusBar } from 'react-native'
+import AppLoading from 'expo-app-loading'
+import { ThemeProvider } from 'styled-components'
 
 import {
   useFonts,
   Inter_400Regular,
   Inter_500Medium
-} from '@expo-google-fonts/inter';
+} from '@expo-google-fonts/inter'
 
 import {
   Archivo_400Regular,
   Archivo_500Medium,
   Archivo_600SemiBold
-} from '@expo-google-fonts/archivo';
+} from '@expo-google-fonts/archivo'
 
-import theme from './src/styles/theme';
+import theme from './src/styles/theme'
 
-import { Routes } from './src/routes';
+import { Routes } from './src/routes'
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -29,7 +29,7 @@ export default function App() {
   })
 
   if (!fontsLoaded) {
-    return <AppLoading />;
+    return <AppLoading />
   }
 
   return (
