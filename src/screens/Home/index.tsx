@@ -10,7 +10,8 @@ import { RFValue } from 'react-native-responsive-fontsize'
 import Animated, {
     useSharedValue,
     useAnimatedStyle,
-    useAnimatedGestureHandler
+    useAnimatedGestureHandler,
+    withSpring
 } from 'react-native-reanimated'
 
 import Logo from '../../assets/logo.svg'
@@ -25,7 +26,6 @@ import {
     HeaderContent,
     TotalCars,
     CarList,
-    MyCarsButton
 } from './styles'
 const BUttonAnimated = Animated.createAnimatedComponent(RectButton)
 
@@ -47,15 +47,17 @@ export function Home() {
     })
 
     const onGestureEvent = useAnimatedGestureHandler({
-        onStart() {
-
+        onStart(_, ctx: any) {
+            ctx.positionX = positionX.value
+            ctx.positionY = positionY.value
         },
-        onActive(event) {
-            positionX.value = event.translationX
-            positionY.value = event.translationY
+        onActive(event, ctx: any) {
+            positionX.value = ctx.positionX + event.translationX
+            positionY.value = ctx.positionY + event.translationY
         },
         onEnd() {
-
+            positionX.value = withSpring(0)
+            positionY.value = withSpring(0)
         }
     })
 
