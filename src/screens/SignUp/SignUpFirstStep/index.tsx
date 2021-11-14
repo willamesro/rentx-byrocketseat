@@ -1,6 +1,8 @@
 import React, { useState } from "react"
+import { Alert, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback } from "react-native"
 import { useNavigation } from "@react-navigation/native"
-import { Keyboard, KeyboardAvoidingView,TouchableWithoutFeedback } from "react-native"
+import * as Yup from "yup"
+
 
 import { BackButton } from "../../../components/BackButton"
 import { Bullet } from "../../../components/Bullet"
@@ -19,16 +21,30 @@ import {
 } from './styles'
 
 export function SignUpFirstStep() {
-    const [user, setUser] = useState('')
+    const [name, setName] = useState('')
     const [email, setEmail] = useState('')
-    const [cnh, setCnh] = useState('')
+    const [driverLicense, setDriverLicense] = useState('')
+
     const navigation = useNavigation()
 
     function handleBack() {
         navigation.goBack()
     }
-    function handleNextStep(){
-        navigation.navigate('SignUpSecondStep')
+    async function handleNextStep() {
+        try {
+            const schema = Yup.object().shape({
+                driverLicense: Yup.string().required('Cnh é obrigatória'),
+                email: Yup.string().email('E-mail inválido').required('Email obrigatório'),
+                name: Yup.string().required('Nome é obrigatório')
+            })
+            const data = { name, email, driverLicense }
+            await schema.validate(data)
+            navigation.navigate('SignUpSecondStep', { user: data })
+        } catch (error) {
+            if (error instanceof Yup.ValidationError) {
+                Alert.alert('Opa', error.message)
+            }
+        }
     }
     return (
         <KeyboardAvoidingView
@@ -41,41 +57,42 @@ export function SignUpFirstStep() {
                         <BackButton onPress={handleBack} />
 
                         <Steps>
-                            <Bullet  />
-                            <Bullet  />
+                            <Bullet active />
+                            <Bullet />
                         </Steps>
 
                     </Header>
-                        <Title>Crie sua{'\n'}conta </Title>
-                        <Subtitle>Faça seu cadastro{'\n'}de forma rápida e fácil</Subtitle>
+                    <Title>Crie sua{'\n'}conta </Title>
+                    <Subtitle>Faça seu cadastro{'\n'}de forma rápida e fácil</Subtitle>
 
                     <Form>
-                    <FormTitle>1. Dados</FormTitle>
+                        <FormTitle>1. Dados</FormTitle>
 
                         <Input
                             iconeName='user'
                             placeholder='Nome'
-                            onChangeText={setUser}
-                            value={user}
+                            onChangeText={setName}
+                            value={name}
                         />
                         <Input
                             iconeName='mail'
                             placeholder='E-mail'
                             keyboardType='email-address'
-                            
+
                             autoCorrect={false}
                             autoCapitalize='none'
                             onChangeText={setEmail}
                             value={email}
                         />
+
                         <Input
                             iconeName='credit-card'
                             placeholder='Cnh'
                             keyboardType='numeric'
                             autoCorrect={false}
                             autoCapitalize='none'
-                            onChangeText={setCnh}
-                            value={cnh}
+                            onChangeText={setDriverLicense}
+                            value={driverLicense}
                         />
 
                     </Form>

@@ -1,11 +1,13 @@
 import React, { useState } from "react"
-import { useNavigation } from "@react-navigation/native"
-import { Keyboard, KeyboardAvoidingView,TouchableWithoutFeedback } from "react-native"
+import { useNavigation, useRoute } from "@react-navigation/native"
+import { Alert, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback } from "react-native"
+import { useTheme } from "styled-components"
+
 
 import { BackButton } from "../../../components/BackButton"
 import { Bullet } from "../../../components/Bullet"
-import { Input } from "../../../components/Input"
 import { Button } from "../../../components/Button"
+import { InputPassword } from "../../../components/InputPassword"
 
 import {
     Container,
@@ -17,17 +19,36 @@ import {
     FormTitle,
     Footer
 } from './styles'
-import { InputPassword } from "../../../components/InputPassword"
+
+interface Parms {
+    user: {
+        name: string
+        email: string
+        driverLicense: string
+    }
+}
 
 export function SignUpSecondStep() {
-    const [user, setUser] = useState('')
-    const [email, setEmail] = useState('')
-    const [cnh, setCnh] = useState('')
+    const [password, setPassword] = useState('')
+    const [passwordConfirm, setPasswordConfirm] = useState('')
+    
     const navigation = useNavigation()
+    const theme = useTheme()
+
+    const { user } = useRoute().params as Parms
+
 
     function handleBack() {
         navigation.goBack()
     }
+    function handleRegister() {
+        if (password !== passwordConfirm) {
+           return Alert.alert('A senha não confere')
+        }
+        // Enviar para api
+        //mudar para tela de confrimação
+    }
+
     return (
         <KeyboardAvoidingView
             behavior='position'
@@ -39,44 +60,42 @@ export function SignUpSecondStep() {
                         <BackButton onPress={handleBack} />
 
                         <Steps>
-                            <Bullet  />
-                            <Bullet  />
+                            <Bullet />
+                            <Bullet active />
                         </Steps>
 
                     </Header>
-                        <Title>Crie sua{'\n'}conta </Title>
-                        <Subtitle>Faça seu cadastro{'\n'}de forma rápida e fácil</Subtitle>
+                    <Title>Crie sua{'\n'}conta </Title>
+                    <Subtitle>Faça seu cadastro{'\n'}de forma rápida e fácil</Subtitle>
 
                     <Form>
-                    <FormTitle>2. Senha</FormTitle>
+
+                        <FormTitle>2. Senha</FormTitle>
 
                         <InputPassword
                             iconeName='lock'
                             placeholder='Senha'
-                            onChangeText={setUser}
-                            value={user}
+                            onChangeText={setPassword}
+                            value={password}
                         />
                         <InputPassword
                             iconeName='lock'
                             placeholder='Repetir a senha'
-                            
-                            autoCorrect={false}
-                            autoCapitalize='none'
-                            onChangeText={setEmail}
-                            value={email}
+                            onChangeText={setPasswordConfirm}
+                            value={passwordConfirm}
                         />
-                       
 
                     </Form>
 
                     <Footer>
                         <Button
-                            title='Próximo'
-                            onPress={() => { }}
-                        // enabled={false}
-                        // loading={false}
-                        />
+                            title='Cadastrar'
+                            color={theme.colors.success}
+                            onPress={handleRegister}
+                            enabled={!!password && !!passwordConfirm}
+                            
 
+                        />
                     </Footer>
                 </Container>
             </TouchableWithoutFeedback>

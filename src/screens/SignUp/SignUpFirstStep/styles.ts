@@ -34,9 +34,8 @@ export const Subtitle = styled.Text`
     color: ${({ theme }) => theme.colors.text};
 `;
 
-
 export const Form = styled.View`
-    margin-top: 64px;
+    margin: 64px 0 16px;
     justify-content: space-between;
 `;
 export const FormTitle = styled.Text`
