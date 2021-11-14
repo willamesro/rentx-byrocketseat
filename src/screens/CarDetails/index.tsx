@@ -43,6 +43,7 @@ export function CarDetails() {
         scrollY.value = event.contentOffset.y
 
     })
+
     const headerStyleAnimated = useAnimatedStyle(() => {
         return {
             height: interpolate(
@@ -53,6 +54,7 @@ export function CarDetails() {
             )
         }
     })
+
     const sliderCarsStyleAnimated = useAnimatedStyle(() => {
         return {
             opacity: interpolate(
@@ -71,7 +73,6 @@ export function CarDetails() {
     function handleGoBack() {
         navigation.goBack()
     }
-
 
     return (
         <Container>
@@ -138,6 +139,7 @@ export function CarDetails() {
                 </About>
 
             </Animated.ScrollView>
+            
             <Footer>
                 <Button title='Escolher período do aluguel' onPress={handleScheduling} />
             </Footer>
