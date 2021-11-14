@@ -62,6 +62,12 @@ export function SchedulingDetails() {
     const theme = useTheme()
     const navigation: any = useNavigation()
     const { car, dates } = useRoute().params as Parms
+    const params = {
+        title: 'Carro alugado !',
+        messege: `Agora você só precisa ir\n'até a concessionária da RENTX\npegar o seu automóvel.`,
+        nextScreenRoute: 'Home'
+    }
+
 
     async function handleConfirmRental() {
         setLoading(true)
@@ -82,7 +88,7 @@ export function SchedulingDetails() {
         api.put(`/schedules_bycars/${car.id}`, {
             id: car.id,
             unavailable_dates
-        }).then(() => navigation.navigate('SchedulingComplete'))
+        }).then(() => navigation.navigate('Confirmation', {data:params}))
             .catch(() => {
                 setLoading(false)
                 Alert.alert('Não foi possivel completar o agendamento!')

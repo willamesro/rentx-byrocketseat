@@ -31,11 +31,16 @@ interface Parms {
 export function SignUpSecondStep() {
     const [password, setPassword] = useState('')
     const [passwordConfirm, setPasswordConfirm] = useState('')
-    
+
     const navigation = useNavigation()
     const theme = useTheme()
 
     const { user } = useRoute().params as Parms
+    const params = {
+        title: 'Conta Criada',
+        message: '',
+        nextScreenRoute: 'SignIn'
+    }
 
 
     function handleBack() {
@@ -43,10 +48,12 @@ export function SignUpSecondStep() {
     }
     function handleRegister() {
         if (password !== passwordConfirm) {
-           return Alert.alert('A senha não confere')
+            return Alert.alert('A senha não confere')
         }
         // Enviar para api
         //mudar para tela de confrimação
+        navigation.navigate('Confirmation', { data: params })
+
     }
 
     return (
@@ -93,7 +100,7 @@ export function SignUpSecondStep() {
                             color={theme.colors.success}
                             onPress={handleRegister}
                             enabled={!!password && !!passwordConfirm}
-                            
+
 
                         />
                     </Footer>
