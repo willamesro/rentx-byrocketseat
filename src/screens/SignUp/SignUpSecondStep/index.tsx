@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { useNavigation, useRoute } from "@react-navigation/native"
 import { Alert, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback } from "react-native"
 import { useTheme } from "styled-components"
+import { api } from '../../../services/api'
 
 
 import { BackButton } from "../../../components/BackButton"
@@ -31,6 +32,7 @@ interface Parms {
 export function SignUpSecondStep() {
     const [password, setPassword] = useState('')
     const [passwordConfirm, setPasswordConfirm] = useState('')
+    const [loadingRegister, setLoadingRegister] = useState(false)
 
     const navigation = useNavigation()
     const theme = useTheme()
@@ -46,13 +48,26 @@ export function SignUpSecondStep() {
     function handleBack() {
         navigation.goBack()
     }
-    function handleRegister() {
+    async function handleRegister() {
         if (password !== passwordConfirm) {
             return Alert.alert('A senha não confere')
         }
         // Enviar para api
+        setLoadingRegister(true)
+        await api.post('/users', {
+            name: user.name,
+            email: user.email,
+            driver_license: user.driverLicense,
+            password
+        }).then(() => {
+            navigation.navigate('Confirmation', { data: params })
+
+        }).catch((err) => {
+            console.log(err);
+
+            Alert.alert('Opa', 'Não foi possivel realizar o cadastro!')
+        })
         //mudar para tela de confrimação
-        navigation.navigate('Confirmation', { data: params })
 
     }
 
@@ -100,6 +115,7 @@ export function SignUpSecondStep() {
                             color={theme.colors.success}
                             onPress={handleRegister}
                             enabled={!!password && !!passwordConfirm}
+                            loading={loadingRegister}
 
 
                         />

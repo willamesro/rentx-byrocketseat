@@ -7,6 +7,7 @@ import * as Yup from 'yup'
 import { Button } from "../../components/Button"
 import { Input } from "../../components/Input"
 import { InputPassword } from "../../components/InputPassword"
+import { useAuth } from "../../hooks/auth"
 
 import {
     Container,
@@ -22,6 +23,7 @@ export function SignIn() {
     const [password, setPassword] = useState('')
     const [check, setCheck] = useState(false)
     const navigation = useNavigation()
+    const { signIn } = useAuth()
 
     async function handleSignIn() {
         try {
@@ -31,7 +33,7 @@ export function SignIn() {
             })
             await schema.validate({ email, password })
             setCheck(true)
-            Alert.alert('Tudo certo')
+            signIn({ email, password })
         } catch (error) {
             if (error instanceof Yup.ValidationError) {
                 Alert.alert('Opa', error.message)
