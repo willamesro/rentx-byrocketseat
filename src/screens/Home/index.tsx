@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
-
 import { RFValue } from 'react-native-responsive-fontsize'
-
-
 
 import Logo from '../../assets/logo.svg'
 import { api } from '../../services/api'
