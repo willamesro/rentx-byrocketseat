@@ -51,6 +51,8 @@ export function InputPassword({ iconeName, value, ...rest }: Props) {
                 <InputText
                     placeholderTextColor={theme.colors.text_datail}
                     secureTextEntry={isPasswordVisible}
+                    autoCorrect={false}
+
                     onFocus={handleInputFocused}
                     onBlur={handleInputBlur}
                     {...rest} />
