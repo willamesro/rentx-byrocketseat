@@ -6,9 +6,9 @@ import HomeSvg from '../assets/home.svg'
 import CarSvg from '../assets/car.svg'
 import PeopleSvg from '../assets/people.svg'
 
-import { Home } from '../screens/Home'
 import { MyCars } from '../screens/MyCars'
 import { AppStackRoutes } from './app.stack.routes'
+import { Profile } from '../screens/Profile'
 
 const { Navigator, Screen } = createBottomTabNavigator()
 
@@ -17,20 +17,15 @@ export function AppTabRoutes() {
 
     return (
         <Navigator
-            screenOptions={
-                {
-                    headerShown: false,
-                    tabBarActiveTintColor: theme.colors.main,
-                    tabBarInactiveTintColor: theme.colors.text_datail,
-                    tabBarShowLabel: false,
-                    tabBarStyle: {
-                        backgroundColor: theme.colors.background_primary
-                    },
-
-                }
-
-            }
-
+            screenOptions={{
+                headerShown: false,
+                tabBarActiveTintColor: theme.colors.main,
+                tabBarInactiveTintColor: theme.colors.text_datail,
+                tabBarShowLabel: false,
+                tabBarStyle: {
+                    backgroundColor: theme.colors.background_primary
+                },
+            }}
         >
             <Screen
                 name='Home'
@@ -39,7 +34,6 @@ export function AppTabRoutes() {
                     tabBarIcon: (({ color }) => (
                         <HomeSvg width={24} height={24} fill={color} />
                     ))
-
                 }}
             />
 
@@ -51,12 +45,11 @@ export function AppTabRoutes() {
                         <CarSvg width={24} height={24} fill={color} />
 
                     ))
-
                 }}
             />
             <Screen
                 name='Profile'
-                component={Home}
+                component={Profile}
                 options={{
                     tabBarIcon: (({ color }) => (
                         <PeopleSvg width={24} height={24} fill={color} />

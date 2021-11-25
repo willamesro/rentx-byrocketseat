@@ -2,9 +2,12 @@ import React, {
     createContext,
     useState,
     useContext,
-    ReactNode
+    ReactNode,
+    useEffect
 } from 'react'
 import { api } from '../services/api'
+import { User as ModelUser } from '../database/model/User'
+import { database } from '../database'
 
 interface User {
     id: string
@@ -12,12 +15,9 @@ interface User {
     name: string
     driver_license: string
     avatar: string
+    token: string
 }
 
-interface AuthState {
-    token: string
-    user: User
-}
 interface SignInCredentials {
     email: string
     password: string
@@ -35,25 +35,52 @@ interface ProviderProps {
 const AuthContext = createContext<AuthContextData>({} as AuthContextData)
 
 function AuthProvider({ children }: ProviderProps) {
-    const [data, setData] = useState<AuthState>({} as AuthState)
+    const [data, setData] = useState<User>({} as User)
 
     async function signIn({ email, password }: SignInCredentials) {
-        const response = await api.post('/sessions', { email, password })
-       
-        const { token, user } = response.data
 
-        api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+        try {
+            const response = await api.post('/sessions', { email, password })
+            const { token, user } = response.data
+            api.defaults.headers.common['Authorization'] = `Bearer ${token}`
 
-        setData({ token, user })
+            const useCollections = database.get<ModelUser>('users')
+            await database.write(async () => {
+                await useCollections.create(newUser => {
+                    newUser.user_id = 'asf'
+                    newUser.name = 'user.name,'
+                    newUser.email = 'user.email,'
+                    newUser.driver_license = 'user.driver_license,'
+                    newUser.avatar = 'user.avatar,'
+                    newUser.token = 'token'
+
+                })
+            })
+            setData({ ...user, token })
+        } catch (error) {
+            throw new Error(`${error}`);
+        }
     }
+    useEffect(() => {
+        async function loadData() {
+            const useCollections = database.get<ModelUser>('users')
+            const response = await useCollections.query().fetch()
+
+            if (response.length > 0) {
+                const userData = response[0]._raw as unknown as ModelUser
+                api.defaults.headers.common['Authorization'] = `Bearer ${userData.token}`
+                setData(userData)
+            }
+
+        }
+        loadData()
+    })
     return (
         <AuthContext.Provider
-            value={
-                {
-                    user: data.user,
-                    signIn
-                }
-            }
+            value={{
+                user: data,
+                signIn
+            }}
         >
             {children}
         </AuthContext.Provider>

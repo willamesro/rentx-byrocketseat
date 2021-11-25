@@ -27,19 +27,20 @@ export function Home() {
     }
 
     useEffect(() => {
+        let isMouted = true
         async function fetchCars() {
             try {
                 const response = await api.get('/cars')
-                setCars(response.data)
+                if (isMouted) setCars(response.data)
 
             } catch (error) {
                 console.log(error)
-
             } finally {
-                setLoading(false)
+                if (isMouted) setLoading(false)
             }
         }
         fetchCars()
+        return () => { isMouted = false }
     }, [])
 
     return (
@@ -57,7 +58,7 @@ export function Home() {
                 </HeaderContent>
 
             </Header>
-            {loading ? <LoadAnimation/> :
+            {loading ? <LoadAnimation /> :
                 <CarList
                     data={cars}
                     keyExtractor={item => item.id}
