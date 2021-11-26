@@ -26,6 +26,7 @@ interface SignInCredentials {
 interface AuthContextData {
     user: User
     signIn: (credentials: SignInCredentials) => Promise<void>
+    singnOut: () => Promise<void>
 }
 
 interface ProviderProps {
@@ -47,16 +48,28 @@ function AuthProvider({ children }: ProviderProps) {
             const useCollections = database.get<ModelUser>('users')
             await database.write(async () => {
                 await useCollections.create(newUser => {
-                    newUser.user_id = 'asf'
-                    newUser.name = 'user.name,'
-                    newUser.email = 'user.email,'
-                    newUser.driver_license = 'user.driver_license,'
-                    newUser.avatar = 'user.avatar,'
-                    newUser.token = 'token'
-
+                    newUser.user_id = user.user_id
+                    newUser.name = user.name
+                    newUser.email = user.email
+                    newUser.driver_license = user.driver_license
+                    newUser.avatar = user.avatar
+                    newUser.token = token
                 })
             })
             setData({ ...user, token })
+
+        } catch (error) {
+            throw new Error(`${error}`);
+        }
+    }
+    async function singnOut() {
+        try {
+            const userCollection = database.get<ModelUser>('users')
+            await database.write(async () => {
+                const userSelected = await userCollection.find(data.id)
+                await userSelected.destroyPermanently()
+            })
+            setData({} as User)
         } catch (error) {
             throw new Error(`${error}`);
         }
@@ -71,15 +84,16 @@ function AuthProvider({ children }: ProviderProps) {
                 api.defaults.headers.common['Authorization'] = `Bearer ${userData.token}`
                 setData(userData)
             }
-
         }
         loadData()
     })
+
     return (
         <AuthContext.Provider
             value={{
                 user: data,
-                signIn
+                signIn,
+                singnOut
             }}
         >
             {children}
