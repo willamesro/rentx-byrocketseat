@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons'
@@ -11,6 +11,7 @@ import { useAuth } from '../../hooks/auth';
 import { BackButton } from '../../components/BackButton';
 import { Input } from '../../components/Input';
 import { InputPassword } from '../../components/InputPassword';
+import { Button } from '../../components/Button';
 
 import {
     Container,
@@ -27,11 +28,9 @@ import {
     OptionTitle,
     Section
 } from './styles'
-import { Button } from '../../components/Button';
-
 
 export function Profile() {
-    const { user, singnOut } = useAuth()
+    const { user, singnOut, updatedUser } = useAuth()
 
     const [option, setOption] = useState<'dataEdit' | 'passwordEdit'>('dataEdit')
     const [avatar, setAvatar] = useState(user.avatar)
@@ -45,8 +44,33 @@ export function Profile() {
     function handleOnChange(optionSelected: 'dataEdit' | 'passwordEdit') {
         setOption(optionSelected)
     }
-    function handleProfileUpdate() {
+    async function handleProfileUpdate() {
+        try {
+            const schema = Yup.object().shape({
+                driverLicense: Yup.string().required('A CNH é obrigatória'),
+                name: Yup.string().required('Nome é obrigatóri0')
+            })
+            const data = { name, driverLicense }
+            await schema.validate(data)
 
+            await updatedUser({
+                id: user.id,
+                user_id: user.user_id,
+                email: user.email,
+                name,
+                driver_license: driverLicense,
+                avatar,
+                token: user.token
+            })
+            Alert.alert('Perfil atualizado')
+
+        } catch (error) {
+            if (error instanceof Yup.ValidationError) {
+                Alert.alert('Opa', error.message)
+            } else {
+                Alert.alert('Não foi possive atualiza o perfil')
+            }
+        }
     }
 
     async function handleSelectAvatar() {

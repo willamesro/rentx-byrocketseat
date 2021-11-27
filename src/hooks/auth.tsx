@@ -11,6 +11,7 @@ import { database } from '../database'
 
 interface User {
 	id: string
+	user_id: string
 	email: string
 	name: string
 	driver_license: string
@@ -49,11 +50,11 @@ function AuthProvider({ children }: ProviderProps) {
 			const useCollections = database.get<ModelUser>('users')
 			await database.write(async () => {
 				await useCollections.create(newUser => {
-					newUser.user_id = user.user_id
-					newUser.name = user.name
-					newUser.email = user.email
-					newUser.driver_license = user.driver_license
-					newUser.avatar = user.avatar
+					newUser.user_id = user.user_id,
+					newUser.name = user.name,
+					newUser.email = user.email,
+					newUser.driver_license = user.driver_license,
+					newUser.avatar = user.avatar,
 					newUser.token = token
 				})
 			})
@@ -76,18 +77,20 @@ function AuthProvider({ children }: ProviderProps) {
 			throw new Error(`${error}`);
 		}
 	}
-	
+
 	async function updatedUser(user: User) {
+		
 		try {
 			const userCollection = database.get<ModelUser>('users')
 			await database.write(async () => {
 				const userSelected = await userCollection.find(user.id)
 				await userSelected.update((userData) => {
-					userData.name = user.name
-					userData.driver_license = user.driver_license
+					userData.name = user.name,
+					userData.driver_license = user.driver_license,
 					userData.avatar = user.avatar
 				})
 			})
+
 			setData(user)
 		} catch (error) {
 			throw new Error(`${error}`)
