@@ -44,6 +44,7 @@ export function Profile() {
     function handleOnChange(optionSelected: 'dataEdit' | 'passwordEdit') {
         setOption(optionSelected)
     }
+
     async function handleProfileUpdate() {
         try {
             const schema = Yup.object().shape({
@@ -73,6 +74,17 @@ export function Profile() {
         }
     }
 
+    function handleSignOut() {
+        Alert.alert(
+            'Quer mesmo sair',
+            'Para efetuar login novamente é necessário conexao com a internet',
+            [
+                { text: 'Cancelar', onPress: () => { } },
+                { text: 'Desconectar', onPress: () => singnOut(), }
+            ]
+        )
+    }
+
     async function handleSelectAvatar() {
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -94,8 +106,6 @@ export function Profile() {
     return (
         <KeyboardAvoidingView behavior='position' enabled >
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
-
-
                 <Container>
                     <Header>
                         <HeaderTop>
@@ -104,7 +114,7 @@ export function Profile() {
                                 onPress={handleBack}
                             />
                             <HeaderTitle>Editar perfil</HeaderTitle>
-                            <LogoutButton onPress={singnOut}>
+                            <LogoutButton onPress={handleSignOut}>
                                 <Feather
                                     name='power'
                                     size={24}
@@ -112,6 +122,7 @@ export function Profile() {
                                 />
                             </LogoutButton>
                         </HeaderTop>
+
                         <PhotoContainer>
                             {!!avatar && <Photo source={{ uri: avatar }} />}
                             <PhotoButton onPress={handleSelectAvatar}>
@@ -123,6 +134,7 @@ export function Profile() {
                             </PhotoButton>
                         </PhotoContainer>
                     </Header>
+
                     <Content style={{ marginBottom: useBottomTabBarHeight() }}>
                         <Options>
                             <Option
@@ -133,6 +145,7 @@ export function Profile() {
                                     Dados
                                 </OptionTitle>
                             </Option>
+
                             <Option
                                 active={option === 'passwordEdit'}
                                 onPress={() => handleOnChange('passwordEdit')}
@@ -142,13 +155,13 @@ export function Profile() {
                                 </OptionTitle>
                             </Option>
                         </Options>
+
                         {option === 'dataEdit' ?
                             <Section >
                                 <Input
                                     iconeName='mail'
                                     editable={false}
                                     defaultValue={user.email}
-
                                 />
                                 <Input
                                     iconeName='user'
@@ -179,10 +192,9 @@ export function Profile() {
                                     iconeName='lock'
                                     placeholder='Repita a nova senha'
                                 />
-
-
                             </Section>
                         }
+
                         <Button
                             title='Salvar alterações'
                             onPress={handleProfileUpdate}
