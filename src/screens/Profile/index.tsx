@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native'
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
-import { Feather } from '@expo/vector-icons'
-import { useTheme } from 'styled-components';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+
 import * as ImagePicker from 'expo-image-picker';
 import * as Yup from 'yup'
+
+import { useTheme } from 'styled-components';
+import { Feather } from '@expo/vector-icons'
+
 import { useAuth } from '../../hooks/auth';
 
 import { BackButton } from '../../components/BackButton';
+import { Button } from '../../components/Button';
 import { Input } from '../../components/Input';
 import { InputPassword } from '../../components/InputPassword';
-import { Button } from '../../components/Button';
 
 import {
     Container,
@@ -199,11 +202,9 @@ export function Profile() {
                             title='Salvar alterações'
                             onPress={handleProfileUpdate}
                         />
-
                     </Content>
                 </Container>
             </TouchableWithoutFeedback>
-
         </KeyboardAvoidingView>
     )
 }
