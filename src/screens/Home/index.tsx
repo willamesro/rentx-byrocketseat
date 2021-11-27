@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { RFValue } from 'react-native-responsive-fontsize'
+// import { useNetInfo } from '@react-native-community/netinfo'
 
 import Logo from '../../assets/logo.svg'
 import { api } from '../../services/api'
@@ -18,9 +19,11 @@ import {
 } from './styles'
 
 export function Home() {
-    const navigation: any = useNavigation()
     const [cars, setCars] = useState<CarDTO[]>([])
     const [loading, setLoading] = useState(true)
+    
+    const navigation: any = useNavigation()
+    // const netInfor = useNetInfo()
 
     function handleCarDetails(car: CarDTO) {
         navigation.navigate('CarDetails', { car })
