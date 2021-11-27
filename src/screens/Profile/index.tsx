@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons'
 import { useTheme } from 'styled-components';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import * as ImagePicker from 'expo-image-picker';
+import * as Yup from 'yup'
 import { useAuth } from '../../hooks/auth';
 
 import { BackButton } from '../../components/BackButton';
@@ -26,6 +27,7 @@ import {
     OptionTitle,
     Section
 } from './styles'
+import { Button } from '../../components/Button';
 
 
 export function Profile() {
@@ -42,6 +44,9 @@ export function Profile() {
 
     function handleOnChange(optionSelected: 'dataEdit' | 'passwordEdit') {
         setOption(optionSelected)
+    }
+    function handleProfileUpdate() {
+
     }
 
     async function handleSelectAvatar() {
@@ -154,6 +159,10 @@ export function Profile() {
 
                             </Section>
                         }
+                        <Button
+                            title='Salvar alterações'
+                            onPress={handleProfileUpdate}
+                        />
 
                     </Content>
                 </Container>
