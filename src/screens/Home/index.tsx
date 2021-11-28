@@ -59,8 +59,9 @@ export function Home() {
                 const carCollection = database.get<ModelCar>('cars')
                 const cars = await carCollection.query().fetch()
 
-                const response = await api.get('/cars')
-                if (isMouted) setCars(response.data)
+                // const response = await api.get('/cars')
+
+                // if (isMouted) setCars(response.data)
 
             } catch (error) {
                 console.log(error)
