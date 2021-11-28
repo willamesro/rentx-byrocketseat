@@ -53,6 +53,7 @@ export function Home() {
 
     useEffect(() => {
         let isMouted = true
+
         async function fetchCars() {
             try {
                 // atualizar a tipagem dos carros para carregamentos dos dados da internet
@@ -60,7 +61,6 @@ export function Home() {
                 const cars = await carCollection.query().fetch()
 
                 const response = await api.get('/cars')
-
                 if (isMouted) setCars(response.data)
 
             } catch (error) {
@@ -70,6 +70,7 @@ export function Home() {
             }
         }
         fetchCars()
+        
         return () => { isMouted = false }
     }, [])
 
