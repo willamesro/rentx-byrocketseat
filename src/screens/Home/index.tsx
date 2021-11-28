@@ -53,6 +53,7 @@ export function Home() {
 
     useEffect(() => {
         let isMouted = true
+        offilineSynchronize()
 
         async function fetchCars() {
             try {
@@ -70,7 +71,7 @@ export function Home() {
             }
         }
         fetchCars()
-        
+
         return () => { isMouted = false }
     }, [])
 
