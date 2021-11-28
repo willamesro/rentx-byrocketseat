@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { RFValue } from 'react-native-responsive-fontsize'
-// import { useNetInfo } from '@react-native-community/netinfo'
+import { useNetInfo } from '@react-native-community/netinfo'
+
+import { synchronize } from '@nozbe/watermelondb/sync'
+import { database } from '../../database'
 
 import Logo from '../../assets/logo.svg'
 import { api } from '../../services/api'
@@ -21,13 +24,27 @@ import {
 export function Home() {
     const [cars, setCars] = useState<CarDTO[]>([])
     const [loading, setLoading] = useState(true)
-    
+
     const navigation: any = useNavigation()
-    // const netInfor = useNetInfo()
+    const netInfor = useNetInfo()
 
     function handleCarDetails(car: CarDTO) {
         navigation.navigate('CarDetails', { car })
     }
+    async function offilineSynchronize() {
+        await synchronize({
+            database,
+            pullChanges: async ({ lastPulledAt }) => {
+                const response = await api
+                    .get(`cars/sync/pull?lastPuledVersion=${lastPulledAt || 0}`)
+
+                const { changes, lastedVersion } = response.data
+                return { changes, timestamp: lastedVersion }
+            },
+            pushChanges: async ({ changes }) => { }
+        })
+    }
+
 
     useEffect(() => {
         let isMouted = true
