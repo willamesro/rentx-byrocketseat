@@ -55,7 +55,7 @@ export function Home() {
         let isMouted = true
         async function fetchCars() {
             try {
-                // atualizar tipagem para carregamentos dos dados da internet
+                // atualizar a tipagem dos carros para carregamentos dos dados da internet
                 const carCollection = database.get<ModelCar>('cars')
                 const cars = await carCollection.query().fetch()
 
