@@ -11,6 +11,7 @@ import { api } from '../../services/api'
 import { CarDTO } from '../../dtos/CarDTO'
 
 import { Car } from '../../components/Car'
+import {Car as ModelCar} from '../../database/model/Car'
 import { LoadAnimation } from '../../components/LoadAnimation'
 
 import {
@@ -41,7 +42,11 @@ export function Home() {
                 const { changes, lastedVersion } = response.data
                 return { changes, timestamp: lastedVersion }
             },
-            pushChanges: async ({ changes }) => { }
+            pushChanges: async ({ changes }) => {
+                console.log(changes);
+                const user  =  changes.user
+                await api.post('/users/sync', user)
+             }
         })
     }
 
@@ -50,6 +55,10 @@ export function Home() {
         let isMouted = true
         async function fetchCars() {
             try {
+                // atualizar tipagem para carregamentos dos dados da internet
+                const carCollection = database.get<ModelCar>('cars')
+                const cars = await carCollection.query().fetch()
+
                 const response = await api.get('/cars')
                 if (isMouted) setCars(response.data)
 
