@@ -8,10 +8,9 @@ import { database } from '../../database'
 
 import Logo from '../../assets/logo.svg'
 import { api } from '../../services/api'
-import { CarDTO } from '../../dtos/CarDTO'
 
 import { Car } from '../../components/Car'
-import {Car as ModelCar} from '../../database/model/Car'
+import { Car as ModelCar } from '../../database/model/Car'
 import { LoadAnimation } from '../../components/LoadAnimation'
 
 import {
@@ -23,57 +22,62 @@ import {
 } from './styles'
 
 export function Home() {
-    const [cars, setCars] = useState<CarDTO[]>([])
+    const [cars, setCars] = useState<ModelCar[]>([])
     const [loading, setLoading] = useState(true)
 
     const navigation: any = useNavigation()
     const netInfor = useNetInfo()
 
-    function handleCarDetails(car: CarDTO) {
+    function handleCarDetails(car: ModelCar) {
         navigation.navigate('CarDetails', { car })
     }
+
     async function offilineSynchronize() {
         await synchronize({
             database,
             pullChanges: async ({ lastPulledAt }) => {
-                const response = await api
-                    .get(`cars/sync/pull?lastPuledVersion=${lastPulledAt || 0}`)
-
-                const { changes, lastedVersion } = response.data
-                return { changes, timestamp: lastedVersion }
+                const response = await api.get(`cars/sync/pull?lastPulledVersion=${lastPulledAt || 0}`)
+                const { changes, latestVersion } = response.data
+                return { changes, timestamp: latestVersion }
             },
             pushChanges: async ({ changes }) => {
-                console.log(changes);
-                const user  =  changes.user
-                await api.post('/users/sync', user)
-             }
+                const user = changes.users
+                await api.post('/users/sync', user).catch(console.log)
+            }
+           
         })
     }
 
 
     useEffect(() => {
         let isMouted = true
-        offilineSynchronize()
-
         async function fetchCars() {
             try {
-                // atualizar a tipagem dos carros para carregamentos dos dados da internet
+
                 const carCollection = database.get<ModelCar>('cars')
                 const cars = await carCollection.query().fetch()
 
-                const response = await api.get('/cars')
-                if (isMouted) setCars(response.data)
+                if (isMouted) { setCars(cars) }
+
 
             } catch (error) {
                 console.log(error)
+
             } finally {
-                if (isMouted) setLoading(false)
+                if (isMouted) { setLoading(false) }
             }
         }
         fetchCars()
 
         return () => { isMouted = false }
     }, [])
+
+    useEffect(() => {
+        if (netInfor.isConnected === true) {
+            offilineSynchronize()
+        }
+    }, [netInfor])
+
 
     return (
         <Container>
