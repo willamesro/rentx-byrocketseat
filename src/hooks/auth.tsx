@@ -52,7 +52,7 @@ function AuthProvider({ children }: ProviderProps) {
 			const useCollections = database.get<ModelUser>('users')
 			await database.write(async () => {
 				await useCollections.create(newUser => {
-					newUser.user_id = user.user_id,
+					newUser.user_id = user.id,
 					newUser.name = user.name,
 					newUser.email = user.email,
 					newUser.driver_license = user.driver_license,

@@ -42,6 +42,7 @@ export function Home() {
             },
             pushChanges: async ({ changes }) => {
                 const user = changes.users
+                
                 await api.post('/users/sync', user).catch(console.log)
             }
            
@@ -53,12 +54,9 @@ export function Home() {
         let isMouted = true
         async function fetchCars() {
             try {
-
                 const carCollection = database.get<ModelCar>('cars')
                 const cars = await carCollection.query().fetch()
-
                 if (isMouted) { setCars(cars) }
-
 
             } catch (error) {
                 console.log(error)
@@ -76,7 +74,7 @@ export function Home() {
         if (netInfor.isConnected === true) {
             offilineSynchronize()
         }
-    }, [netInfor])
+    }, [netInfor.isConnected])
 
 
     return (
