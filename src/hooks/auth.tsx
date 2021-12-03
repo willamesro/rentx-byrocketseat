@@ -106,6 +106,7 @@ function AuthProvider({ children }: ProviderProps) {
 
 			if (response.length > 0) {
 				const userData = response[0]._raw as unknown as ModelUser
+				
 				api.defaults.headers.common['Authorization'] = `Bearer ${userData.token}`
 				setData(userData)
 				setLoading(false)

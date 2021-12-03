@@ -145,6 +145,7 @@ export function CarDetails() {
                         <Price>R$ {(netInfor.isConnected === true) ? carUpdated.price : `---`}</Price>
                     </Rent>
                 </Details>
+
                 {!!carUpdated.accessories &&
                     <Acessories>
                         {
@@ -156,7 +157,8 @@ export function CarDetails() {
                                 />
                             ))
                         }
-                    </Acessories>}
+                    </Acessories>
+                }
 
                 <About>
                     {car.about}

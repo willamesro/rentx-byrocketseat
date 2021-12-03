@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useIsFocused } from '@react-navigation/native'
 import { FlatList, StatusBar } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
 import { api } from '../../services/api'
 import { CarDTO } from '../../dtos/CarDTO'
+import { Car as ModalCar } from '../../database/model/Car'
 
 import { Car } from '../../components/Car'
 import {
@@ -24,24 +25,22 @@ import {
 import { BackButton } from '../../components/BackButton'
 import { useTheme } from 'styled-components'
 import { LoadAnimation } from '../../components/LoadAnimation'
+import { format, parseISO } from 'date-fns'
 
-interface CarProps {
+interface DataProps {
     id: string
-    user_id: string,
-    startDate: string,
-    endDate: string
-    car: CarDTO
+    car: ModalCar
+    start_date: string,
+    end_date: string
 }
 
 export function MyCars() {
-    const [cars, setCars] = useState<CarProps[]>([])
+    const [cars, setCars] = useState<DataProps[]>([])
     const [loading, setLoading] = useState(true)
 
     const navigation: any = useNavigation()
     const theme = useTheme()
-    function handleCarDetails(car: CarDTO) {
-        navigation.navigate('CarDetails', { car })
-    }
+  
     function handleBack() {
         navigation.goBack()
     }
@@ -49,8 +48,16 @@ export function MyCars() {
     useEffect(() => {
         async function fetchCars() {
             try {
-                const response = await api.get('/schedules_byuser?user_id=1 ')
-                setCars(response.data)
+                const { data } = await api.get('/rentals')
+                const dataFormated = data.map((data: DataProps) => {
+                    return {
+                        id: data.id,
+                        car: data.car,
+                        start_date: format(parseISO(data.start_date), 'dd/MM/yyyy'),
+                        end_date: format(parseISO(data.end_date), 'dd/MM/yyyy'),
+                    }
+                })
+                setCars(dataFormated)
 
             } catch (error) {
                 console.log(error)
@@ -60,25 +67,25 @@ export function MyCars() {
             }
         }
         fetchCars()
-    }, [])
+    }, [useIsFocused])
 
     return (
         <Container>
             <StatusBar barStyle='light-content' />
 
             <Header>
-                    <BackButton
-                        onPress={handleBack}
-                        color={theme.colors.line}
+                <BackButton
+                    onPress={handleBack}
+                    color={theme.colors.line}
 
-                    />
-                    <Title>
-                        Seus agendamentos,{'\n'}
-                        estão aqui.
-                    </Title>
-                    <SubTitle>
-                        Conforto, segurança e praticidade.
-                    </SubTitle>
+                />
+                <Title>
+                    Seus agendamentos,{'\n'}
+                    estão aqui.
+                </Title>
+                <SubTitle>
+                    Conforto, segurança e praticidade.
+                </SubTitle>
 
             </Header>
             {loading ? <LoadAnimation /> :
@@ -95,20 +102,19 @@ export function MyCars() {
                             <CarWapper>
                                 <Car
                                     data={item.car}
-                                // onPress={() => handleCarDetails(item.car)}
                                 />
 
                                 <CarFooter>
                                     <CarFooterTitle>Período</CarFooterTitle>
                                     <CarFooterPeriod>
-                                        <CarFooterDate>{item.startDate}</CarFooterDate>
+                                        <CarFooterDate>{item.start_date}</CarFooterDate>
                                         <AntDesign
                                             name='arrowright'
                                             size={20}
                                             color={theme.colors.shape}
                                             style={{ marginHorizontal: 10 }}
                                         />
-                                        <CarFooterDate>{item.endDate}</CarFooterDate>
+                                        <CarFooterDate>{item.end_date}</CarFooterDate>
                                     </CarFooterPeriod>
 
                                 </CarFooter>

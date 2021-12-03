@@ -27,6 +27,7 @@ export interface CarData {
     },
     thumbnail: string
 }
+
 import { getAcessoryIcon } from '../../utils/getAccessoryIcon';
 import { useTheme } from 'styled-components';
 
@@ -57,7 +58,6 @@ export function Car({ data, ...rest }: Props) {
                 </About>
 
             </Details>
-
             <CarImage source={{ uri: data.thumbnail }} resizeMode='contain' />
 
         </Container>
